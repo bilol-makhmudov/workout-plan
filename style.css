@@ -1,0 +1,181 @@
+#day-navigation {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#day-navigation button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+}
+
+#day-navigation button:hover {
+    color: #2c3e50;
+}
+
+#day-navigation button:focus {
+    outline: none;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background: #f0f2f5;
+    color: #333;
+    padding: 0;
+    margin: 0;
+}
+
+header {
+    background: #37474F;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+main {
+    max-width: 800px;
+    /* Wider main area */
+    margin: 20px auto;
+    /* Added margin for spacing */
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 20px;
+}
+
+#workout-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+#workout-header h2 {
+    font-size: 1.75rem;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+#workout-header p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+#workout-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.exercise {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.exercise:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.15);
+}
+
+.exercise-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.exercise-name {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 0;
+}
+
+.exercise-details {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.sets-reps,
+.rest {
+    margin-bottom: 8px;
+}
+
+.superset {
+    font-style: italic;
+    color: #e74c3c;
+}
+
+.rest-day {
+    text-align: center;
+    padding: 20px;
+    color: #27ae60;
+}
+
+.rest-day i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+
+.upload-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #37474F;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: 1px solid #37474F;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.upload-link:hover {
+    background-color: #37474F;
+    color: #fff;
+}
+
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    #workout-header h2 {
+        font-size: 1.5rem;
+    }
+
+    #workout-container {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-container {
+        margin: 20px;
+        padding: 15px;
+    }
+}
