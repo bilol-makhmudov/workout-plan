@@ -50,7 +50,11 @@ A lightweight client-side web application for managing and viewing personalized 
 
    * Open `log.html` to record how much weight you lifted for each set.
 
-7. **Check your statistics**
+7. **View previous logs**
+
+   * Open `logs.html` to browse all of your saved entries.
+
+8. **Check your statistics**
 
    * Open `stats.html` to see the best weight you've logged for each exercise.
 
