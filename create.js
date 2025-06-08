@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     updateMuscleButton();
-
     function createExerciseRow(data = {}) {
         const row = document.createElement('div');
         row.className = 'exercise-row';
