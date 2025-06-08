@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Workout</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+<header class="bg-dark text-white text-center py-3 mb-4">
+    <h1>Workout Log</h1>
+</header>
+<main class="container">
+    <div class="mb-3">
+        <label for="log-date" class="form-label">Date</label>
+        <input type="date" id="log-date" class="form-control">
+    </div>
+    <div id="log-container"></div>
+    <button id="save-log" class="btn btn-primary mt-3">Save Log</button>
+    <div id="log-status" class="status mt-3"></div>
+    <a href="index.html" class="d-block mt-4">Back to Workout Planner</a>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="log.js"></script>
+</body>
+</html>

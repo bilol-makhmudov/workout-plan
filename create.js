@@ -10,22 +10,41 @@ const MUSCLE_GROUPS = [
 
 document.addEventListener('DOMContentLoaded', () => {
     const daySelect = document.getElementById('day-select');
-    const muscleSelect = document.getElementById('muscle-group');
+    const muscleMenu = document.getElementById('muscle-group');
+    const muscleDropdownBtn = document.getElementById('muscleDropdown');
     const exercisesContainer = document.getElementById('exercises');
     const addExerciseBtn = document.getElementById('add-exercise');
     const saveDayBtn = document.getElementById('save-day');
     const savePlanBtn = document.getElementById('save-plan');
     const statusEl = document.getElementById('status');
 
+    let selectedMuscles = [];
+
     const plan = {};
 
+    function updateMuscleButton() {
+        muscleDropdownBtn.textContent = selectedMuscles.length ? selectedMuscles.join(', ') : 'Select Muscle Groups';
+    }
+
     MUSCLE_GROUPS.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = m;
-        muscleSelect.appendChild(opt);
+        const li = document.createElement('li');
+        li.innerHTML = `<label class="dropdown-item"><input type="checkbox" value="${m}" class="me-2"> ${m}</label>`;
+        muscleMenu.appendChild(li);
     });
 
+    muscleMenu.addEventListener('change', e => {
+        if (e.target.type === 'checkbox') {
+            const val = e.target.value;
+            if (e.target.checked) {
+                if (!selectedMuscles.includes(val)) selectedMuscles.push(val);
+            } else {
+                selectedMuscles = selectedMuscles.filter(v => v !== val);
+            }
+            updateMuscleButton();
+        }
+    });
+
+    updateMuscleButton();
     function createExerciseRow(data = {}) {
         const row = document.createElement('div');
         row.className = 'exercise-row';
@@ -43,16 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadDay(day) {
         exercisesContainer.innerHTML = '';
-        muscleSelect.querySelectorAll('option').forEach(opt => opt.selected = false);
+        selectedMuscles = [];
+        muscleMenu.querySelectorAll('input[type=checkbox]').forEach(cb => {
+            cb.checked = false;
+        });
         if (plan[day]) {
             const muscles = (plan[day].muscle_group || '').split(/,\s*/);
-            Array.from(muscleSelect.options).forEach(opt => {
-                if (muscles.includes(opt.value)) opt.selected = true;
+            muscleMenu.querySelectorAll('input[type=checkbox]').forEach(cb => {
+                cb.checked = muscles.includes(cb.value);
+                if (cb.checked) selectedMuscles.push(cb.value);
             });
             plan[day].exercises.forEach(ex => {
                 exercisesContainer.appendChild(createExerciseRow(ex));
             });
         }
+        updateMuscleButton();
     }
 
     addExerciseBtn.addEventListener('click', () => {
@@ -62,9 +86,18 @@ document.addEventListener('DOMContentLoaded', () => {
     daySelect.addEventListener('change', e => loadDay(e.target.value));
 
     saveDayBtn.addEventListener('click', () => {
+        let valid = true;
+        $('#exercises .exercise-row input').each(function () {
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                valid = false;
+                return false;
+            }
+        });
+        if (!valid) return;
+
         const day = daySelect.value;
-        const muscleVals = Array.from(muscleSelect.selectedOptions).map(o => o.value);
-        const muscle = muscleVals.join(', ');
+        const muscle = selectedMuscles.join(', ');
         const rows = exercisesContainer.querySelectorAll('.exercise-row');
         const exercises = [];
         rows.forEach(row => {
@@ -73,12 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const reps = row.querySelector('.ex-reps').value.trim();
             const rest = parseInt(row.querySelector('.ex-rest').value, 10);
             const superset = row.querySelector('.ex-superset').value.trim();
-            if (name && !isNaN(sets) && sets >= 1 && sets <= 10 && reps && /^\d+(?:-\d+)?$/.test(reps)) {
-                const ex = { name, sets, reps };
-                if (!isNaN(rest) && rest >= 0 && rest <= 600) ex.rest_sec = rest;
-                if (superset) ex.superset_with = superset;
-                exercises.push(ex);
-            }
+            const ex = { name, sets, reps };
+            if (!isNaN(rest)) ex.rest_sec = rest;
+            if (superset) ex.superset_with = superset;
+            exercises.push(ex);
         });
         if (muscle && exercises.length) {
             plan[day] = { muscle_group: muscle, exercises };

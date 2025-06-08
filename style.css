@@ -185,6 +185,14 @@ main {
     color: #e74c3c;
 }
 
+.log-exercise h5 {
+    margin-bottom: 5px;
+}
+
+.log-exercise .input-group-text {
+    width: 70px;
+}
+
 
 @media (max-width: 600px) {
     header h1 {
