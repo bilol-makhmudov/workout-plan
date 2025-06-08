@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Row, Col } from 'react-bootstrap';
+import { Card, Button, Row, Col, Fade } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { WorkoutPlan, Exercise } from '../types';
 
@@ -28,17 +28,19 @@ const Home: React.FC = () => {
   }, []);
 
   const renderExercises = (exs: Exercise[]) => (
-    <Row xs={1} md={2} className="g-3">
+    <Row xs={1} sm={2} lg={3} className="g-3">
       {exs.map((ex,i) => (
         <Col key={i}>
-          <Card onClick={() => navigate(`/log?day=${currentDay}&exercise=${encodeURIComponent(ex.name)}`)} style={{cursor:'pointer'}}>
-            <Card.Body>
-              <Card.Title>{ex.name}</Card.Title>
-              <div>{ex.sets}×{ex.reps}</div>
-              {ex.rest_sec && <div>Rest {ex.rest_sec}s</div>}
-              {ex.superset_with && <div>Superset: {ex.superset_with}</div>}
-            </Card.Body>
-          </Card>
+          <Fade in={true} appear>
+            <Card className="h-100" onClick={() => navigate(`/log?day=${currentDay}&exercise=${encodeURIComponent(ex.name)}`)} style={{cursor:'pointer'}}>
+              <Card.Body>
+                <Card.Title>{ex.name}</Card.Title>
+                <div>{ex.sets}×{ex.reps}</div>
+                {ex.rest_sec && <div>Rest {ex.rest_sec}s</div>}
+                {ex.superset_with && <div>Superset: {ex.superset_with}</div>}
+              </Card.Body>
+            </Card>
+          </Fade>
         </Col>
       ))}
     </Row>
