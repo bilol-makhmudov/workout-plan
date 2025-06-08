@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Dropdown } from 'react-bootstrap';
+import { Form, Button, Dropdown, Card, Fade } from 'react-bootstrap';
 import { WorkoutPlan, Exercise, DayPlan } from '../types';
 
 const MUSCLE_GROUPS = ['Chest','Back','Legs','Shoulders','Arms','Core','Full Body'];
@@ -12,6 +12,7 @@ const CreatePlan: React.FC = () => {
     try { return JSON.parse(localStorage.getItem('workoutPlan') || '{}'); } catch { return {}; }
   });
   const [status, setStatus] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const existing = plan[day];
@@ -23,6 +24,18 @@ const CreatePlan: React.FC = () => {
       setExercises([]);
     }
   }, [day]);
+
+  useEffect(() => {
+    if (!selectedMuscles.length) {
+      setError('Please choose at least one muscle group');
+      return;
+    }
+    if (exercises.some(ex => !ex.name || ex.sets <= 0)) {
+      setError('Each exercise needs a name and set count');
+      return;
+    }
+    setError('');
+  }, [selectedMuscles, exercises]);
 
   const updateExercise = (idx: number, field: keyof Exercise, value: any) => {
     setExercises(exs => exs.map((ex,i) => i===idx ? {...ex,[field]:value} : ex));
@@ -51,7 +64,7 @@ const CreatePlan: React.FC = () => {
   };
 
   return (
-    <div className="create-container">
+    <Card className="create-container p-3">
       <Form>
         <Form.Group className="mb-3">
           <Form.Label>Day</Form.Label>
@@ -65,7 +78,7 @@ const CreatePlan: React.FC = () => {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Muscle Groups</Form.Label>
-          <Dropdown>
+          <Dropdown autoClose="outside">
             <Dropdown.Toggle className="w-100" variant="outline-primary">{selectedMuscles.length ? selectedMuscles.join(', ') : 'Select Muscle Groups'}</Dropdown.Toggle>
             <Dropdown.Menu className="w-100">
               {MUSCLE_GROUPS.map(m => (
@@ -77,14 +90,16 @@ const CreatePlan: React.FC = () => {
           </Dropdown>
         </Form.Group>
         {exercises.map((ex,idx) => (
-          <div className="exercise-row mb-2" key={idx}>
-            <Form.Control value={ex.name} placeholder="Name" className="mb-1" onChange={e=>updateExercise(idx,'name',e.target.value)} />
-            <Form.Control type="number" value={ex.sets} placeholder="Sets" className="mb-1" onChange={e=>updateExercise(idx,'sets',parseInt(e.target.value,10))} />
-            <Form.Control value={ex.reps} placeholder="Reps" className="mb-1" onChange={e=>updateExercise(idx,'reps',e.target.value)} />
-            <Form.Control type="number" value={ex.rest_sec||''} placeholder="Rest" className="mb-1" onChange={e=>updateExercise(idx,'rest_sec',parseInt(e.target.value,10))} />
-            <Form.Control value={ex.superset_with||''} placeholder="Superset" className="mb-1" onChange={e=>updateExercise(idx,'superset_with',e.target.value)} />
-            <Button variant="danger" size="sm" onClick={()=>removeExercise(idx)}>×</Button>
-          </div>
+          <Fade in={true} appear key={idx}>
+            <div className="exercise-row mb-2">
+              <Form.Control value={ex.name} placeholder="Name" className="mb-1" onChange={e=>updateExercise(idx,'name',e.target.value)} />
+              <Form.Control type="number" value={ex.sets} placeholder="Sets" className="mb-1" onChange={e=>updateExercise(idx,'sets',parseInt(e.target.value,10))} />
+              <Form.Control value={ex.reps} placeholder="Reps" className="mb-1" onChange={e=>updateExercise(idx,'reps',e.target.value)} />
+              <Form.Control type="number" value={ex.rest_sec||''} placeholder="Rest" className="mb-1" onChange={e=>updateExercise(idx,'rest_sec',parseInt(e.target.value,10))} />
+              <Form.Control value={ex.superset_with||''} placeholder="Superset" className="mb-1" onChange={e=>updateExercise(idx,'superset_with',e.target.value)} />
+              <Button variant="danger" size="sm" onClick={()=>removeExercise(idx)}>×</Button>
+            </div>
+          </Fade>
         ))}
         <Button variant="secondary" size="sm" onClick={addExercise}>Add Exercise</Button>
         <div className="mt-3">
@@ -92,8 +107,9 @@ const CreatePlan: React.FC = () => {
           <Button variant="success" className="ms-2" onClick={savePlan}>Save Plan</Button>
         </div>
         {status && <div className="mt-3">{status}</div>}
+        {error && <div className="text-danger mt-2">{error}</div>}
       </Form>
-    </div>
+    </Card>
   );
 };
 

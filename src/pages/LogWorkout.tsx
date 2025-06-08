@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Card } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { WorkoutPlan, WorkoutLogs } from '../types';
 
@@ -64,16 +64,18 @@ const LogWorkout: React.FC = () => {
         <Form.Control type="date" value={date} onChange={e=>setDate(e.target.value)} />
       </Form.Group>
       {render().map(ex => (
-        <div className="mb-3" key={ex.name} id={highlight===ex.name?ex.name:undefined}>
-          <h5>{ex.name}</h5>
-          {Array.from({length: ex.sets}).map((_,i)=>(
-            <div className="input-group input-group-sm mb-1" key={i}>
-              <span className="input-group-text">Set {i+1}</span>
-              <Form.Control type="number" className="weight-input" data-ex={ex.name} data-set={i+1} min="0" step="0.5" />
-              <span className="input-group-text">kg</span>
-            </div>
-          ))}
-        </div>
+        <Card className="mb-3" key={ex.name} id={highlight===ex.name?ex.name:undefined}>
+          <Card.Body>
+            <Card.Title>{ex.name}</Card.Title>
+            {Array.from({length: ex.sets}).map((_,i)=>(
+              <div className="input-group input-group-sm mb-1" key={i}>
+                <span className="input-group-text">Set {i+1}</span>
+                <Form.Control type="number" className="weight-input" data-ex={ex.name} data-set={i+1} min="0" step="0.5" />
+                <span className="input-group-text">kg</span>
+              </div>
+            ))}
+          </Card.Body>
+        </Card>
       ))}
       <Button onClick={save}>Save Log</Button>
     </div>
