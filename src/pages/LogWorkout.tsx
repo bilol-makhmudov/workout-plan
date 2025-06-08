@@ -58,8 +58,8 @@ const LogWorkout: React.FC = () => {
   const highlight = searchParams.get('exercise');
 
   return (
-    <div>
-      <Form.Group className="mb-3 mt-3">
+    <Card className="p-3">
+      <Form.Group className="mb-3">
         <Form.Label>Date</Form.Label>
         <Form.Control type="date" value={date} onChange={e=>setDate(e.target.value)} />
       </Form.Group>
@@ -78,7 +78,7 @@ const LogWorkout: React.FC = () => {
         </Card>
       ))}
       <Button onClick={save}>Save Log</Button>
-    </div>
+    </Card>
   );
 };
 

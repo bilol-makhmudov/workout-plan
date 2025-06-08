@@ -13,8 +13,11 @@ const CreatePlan: React.FC = () => {
     try { return JSON.parse(localStorage.getItem('workoutPlan') || '{}'); } catch { return {}; }
   });
   const [status, setStatus] = useState('');
-  const [error, setError] = useState('');
+  const [muscleError, setMuscleError] = useState('');
+  const [exerciseErrors, setExerciseErrors] = useState<{name?:string;sets?:string;reps?:string;}[]>([]);
   const navigate = useNavigate();
+
+  const hasErrors = muscleError || exerciseErrors.some(e => e.name || e.sets || e.reps);
 
   useEffect(() => {
     const existing = plan[day];
@@ -28,27 +31,41 @@ const CreatePlan: React.FC = () => {
   }, [day]);
 
   useEffect(() => {
-    if (!selectedMuscles.length) {
-      setError('Please choose at least one muscle group');
-      return;
-    }
-    if (exercises.some(ex => !ex.name || ex.sets < 1 || ex.sets > 5)) {
-      setError('Each exercise needs a name and set count (1-5)');
-      return;
-    }
-    setError('');
-  }, [selectedMuscles, exercises]);
+    setMuscleError(selectedMuscles.length ? '' : 'Choose at least one group');
+  }, [selectedMuscles]);
+
+  useEffect(() => {
+    setExerciseErrors(exercises.map(ex => ({
+      name: ex.name ? '' : 'Required',
+      sets: ex.sets >= 1 && ex.sets <= 5 ? '' : '1-5',
+      reps: ex.reps ? '' : 'Required',
+    })));
+  }, [exercises]);
 
   const updateExercise = (idx: number, field: keyof Exercise, value: any) => {
-    setExercises(exs => exs.map((ex,i) => i===idx ? {...ex,[field]:value} : ex));
+    setExercises(exs => {
+      const next = exs.map((ex,i)=> i===idx ? {...ex,[field]:value} : ex);
+      setExerciseErrors(next.map(ex => ({
+        name: ex.name ? '' : 'Required',
+        sets: ex.sets >=1 && ex.sets <=5 ? '' : '1-5',
+        reps: ex.reps ? '' : 'Required',
+      })));
+      return next;
+    });
   };
 
-  const addExercise = () => setExercises(exs => [...exs,{name:'',sets:0,reps:''}]);
-  const removeExercise = (idx:number) => setExercises(exs => exs.filter((_,i)=>i!==idx));
+  const addExercise = () => {
+    setExercises(exs => [...exs,{name:'',sets:0,reps:''}]);
+    setExerciseErrors(errs => [...errs,{name:'Required',sets:'1-5',reps:'Required'}]);
+  };
+  const removeExercise = (idx:number) => {
+    setExercises(exs => exs.filter((_,i)=>i!==idx));
+    setExerciseErrors(errs => errs.filter((_,i)=>i!==idx));
+  };
 
   const saveDay = () => {
-    if (!selectedMuscles.length || exercises.length===0) {
-      setStatus('Enter a muscle group and at least one exercise.');
+    if (hasErrors || !selectedMuscles.length || exercises.length===0) {
+      setStatus('Fix errors before saving.');
       return;
     }
     const dp: DayPlan = { muscle_group: selectedMuscles.join(', '), exercises };
@@ -57,6 +74,7 @@ const CreatePlan: React.FC = () => {
   };
 
   const savePlan = () => {
+    if (hasErrors) return;
     localStorage.setItem('workoutPlan', JSON.stringify({...plan,[day]:{ muscle_group: selectedMuscles.join(', '), exercises }}));
     setStatus('Plan saved!');
     navigate('/');
@@ -108,6 +126,7 @@ const CreatePlan: React.FC = () => {
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
+              {muscleError && <Form.Text className="text-danger">{muscleError}</Form.Text>}
             </Form.Group>
           </Col>
         </Row>
@@ -121,8 +140,12 @@ const CreatePlan: React.FC = () => {
                     placeholder="Name"
                     className="mb-1"
                     maxLength={30}
+                    isInvalid={!!exerciseErrors[idx]?.name}
                     onChange={e=>updateExercise(idx,'name',e.target.value)}
                   />
+                  {exerciseErrors[idx]?.name && (
+                    <Form.Text className="text-danger">{exerciseErrors[idx]?.name}</Form.Text>
+                  )}
                 </Col>
                 <Col md={6}>
                   <Form.Control
@@ -132,16 +155,24 @@ const CreatePlan: React.FC = () => {
                     className="mb-1"
                     min={1}
                     max={5}
+                    isInvalid={!!exerciseErrors[idx]?.sets}
                     onChange={e=>updateExercise(idx,'sets',parseInt(e.target.value,10))}
                   />
+                  {exerciseErrors[idx]?.sets && (
+                    <Form.Text className="text-danger">{exerciseErrors[idx]?.sets}</Form.Text>
+                  )}
                 </Col>
                 <Col md={6}>
                   <Form.Control
                     value={ex.reps}
                     placeholder="Reps"
                     className="mb-1"
+                    isInvalid={!!exerciseErrors[idx]?.reps}
                     onChange={e=>updateExercise(idx,'reps',e.target.value)}
                   />
+                  {exerciseErrors[idx]?.reps && (
+                    <Form.Text className="text-danger">{exerciseErrors[idx]?.reps}</Form.Text>
+                  )}
                 </Col>
                 <Col md={6}>
                   <Form.Control
@@ -170,12 +201,11 @@ const CreatePlan: React.FC = () => {
         ))}
         <Button variant="secondary" size="sm" onClick={addExercise}>Add Exercise</Button>
         <div className="mt-3">
-          <Button onClick={saveDay}>Save Day</Button>
-          <Button variant="success" className="ms-2" onClick={savePlan}>Save Plan</Button>
+          <Button onClick={saveDay} disabled={hasErrors}>Save Day</Button>
+          <Button variant="success" className="ms-2" onClick={savePlan} disabled={hasErrors}>Save Plan</Button>
           <Button variant="outline-secondary" className="ms-2" onClick={()=>navigate('/')}>Cancel</Button>
         </div>
         {status && <div className="mt-3">{status}</div>}
-        {error && <div className="text-danger mt-2">{error}</div>}
       </Form>
     </Card>
   );

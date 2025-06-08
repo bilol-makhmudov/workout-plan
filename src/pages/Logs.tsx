@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Pagination } from 'react-bootstrap';
+import { Table, Pagination, Button } from 'react-bootstrap';
 import { WorkoutLogs } from '../types';
 
 const Logs: React.FC = () => {
   const [logs, setLogs] = useState<WorkoutLogs>({});
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
+
+  const deleteEntry = (date: string, name: string, setIdx: number) => {
+    const newLogs = { ...logs };
+    const arr = newLogs[date].exercises[name];
+    arr.splice(setIdx,1);
+    if (arr.length === 0) delete newLogs[date].exercises[name];
+    if (Object.keys(newLogs[date].exercises).length === 0) delete newLogs[date];
+    setLogs(newLogs);
+    localStorage.setItem('workoutLogs', JSON.stringify(newLogs));
+  };
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('workoutLogs') || '{}');
@@ -20,6 +30,7 @@ const Logs: React.FC = () => {
         date,
         name,
         set: idx+1,
+        setIndex: idx,
         weight: w ?? ''
       }));
     });
@@ -32,7 +43,7 @@ const Logs: React.FC = () => {
     <>
       <Table size="sm">
         <thead>
-          <tr><th>Date</th><th>Exercise</th><th>Set</th><th>Weight (kg)</th></tr>
+          <tr><th>Date</th><th>Exercise</th><th>Set</th><th>Weight (kg)</th><th></th></tr>
         </thead>
         <tbody>
           {paged.map((e,i) => (
@@ -41,6 +52,7 @@ const Logs: React.FC = () => {
               <td>{e.name}</td>
               <td>{e.set}</td>
               <td>{e.weight}</td>
+              <td><Button size="sm" variant="outline-danger" onClick={() => deleteEntry(e.date, e.name, e.setIndex)}>Delete</Button></td>
             </tr>
           ))}
         </tbody>

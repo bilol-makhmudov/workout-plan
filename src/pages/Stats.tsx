@@ -54,6 +54,8 @@ const Stats: React.FC = () => {
           }]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           scales:{
             y:{ title:{ display:true, text:'kg'} },
             x:{ title:{ display:true, text:'Date'} }
@@ -69,7 +71,7 @@ const Stats: React.FC = () => {
   return (
     <Card className="p-3">
       <h5 className="mb-3">Progress Charts</h5>
-      <div ref={containerRef}></div>
+      <div ref={containerRef} style={{overflowX:'auto'}}></div>
     </Card>
   );
 };
