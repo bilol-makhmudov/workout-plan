@@ -1,6 +1,16 @@
+const MUSCLE_GROUPS = [
+    'Chest',
+    'Back',
+    'Legs',
+    'Shoulders',
+    'Arms',
+    'Core',
+    'Full Body'
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     const daySelect = document.getElementById('day-select');
-    const muscleInput = document.getElementById('muscle-group');
+    const muscleSelect = document.getElementById('muscle-group');
     const exercisesContainer = document.getElementById('exercises');
     const addExerciseBtn = document.getElementById('add-exercise');
     const saveDayBtn = document.getElementById('save-day');
@@ -9,16 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const plan = {};
 
+    MUSCLE_GROUPS.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        muscleSelect.appendChild(opt);
+    });
+
     function createExerciseRow(data = {}) {
         const row = document.createElement('div');
         row.className = 'exercise-row';
         row.innerHTML = `
-            <input type="text" class="ex-name" placeholder="Name" value="${data.name || ''}">
-            <input type="number" class="ex-sets" placeholder="Sets" value="${data.sets || ''}">
-            <input type="text" class="ex-reps" placeholder="Reps" value="${data.reps || ''}">
-            <input type="number" class="ex-rest" placeholder="Rest" value="${data.rest_sec || ''}">
-            <input type="text" class="ex-superset" placeholder="Superset" value="${data.superset_with || ''}">
-            <button type="button" class="remove-exercise">&times;</button>
+            <input type="text" class="form-control ex-name" placeholder="Name" value="${data.name || ''}" required>
+            <input type="number" class="form-control ex-sets" placeholder="Sets" value="${data.sets || ''}" min="1" max="10" required>
+            <input type="text" class="form-control ex-reps" placeholder="Reps" value="${data.reps || ''}" pattern="\\d+(?:-\\d+)?" required>
+            <input type="number" class="form-control ex-rest" placeholder="Rest" value="${data.rest_sec || ''}" min="0" max="600">
+            <input type="text" class="form-control ex-superset" placeholder="Superset" value="${data.superset_with || ''}">
+            <button type="button" class="btn btn-danger btn-sm remove-exercise">&times;</button>
         `;
         row.querySelector('.remove-exercise').addEventListener('click', () => row.remove());
         return row;
@@ -26,9 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadDay(day) {
         exercisesContainer.innerHTML = '';
-        muscleInput.value = '';
+        muscleSelect.querySelectorAll('option').forEach(opt => opt.selected = false);
         if (plan[day]) {
-            muscleInput.value = plan[day].muscle_group || '';
+            const muscles = (plan[day].muscle_group || '').split(/,\s*/);
+            Array.from(muscleSelect.options).forEach(opt => {
+                if (muscles.includes(opt.value)) opt.selected = true;
+            });
             plan[day].exercises.forEach(ex => {
                 exercisesContainer.appendChild(createExerciseRow(ex));
             });
@@ -43,7 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveDayBtn.addEventListener('click', () => {
         const day = daySelect.value;
-        const muscle = muscleInput.value.trim();
+        const muscleVals = Array.from(muscleSelect.selectedOptions).map(o => o.value);
+        const muscle = muscleVals.join(', ');
         const rows = exercisesContainer.querySelectorAll('.exercise-row');
         const exercises = [];
         rows.forEach(row => {
@@ -52,9 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const reps = row.querySelector('.ex-reps').value.trim();
             const rest = parseInt(row.querySelector('.ex-rest').value, 10);
             const superset = row.querySelector('.ex-superset').value.trim();
-            if (name && sets && reps) {
+            if (name && !isNaN(sets) && sets >= 1 && sets <= 10 && reps && /^\d+(?:-\d+)?$/.test(reps)) {
                 const ex = { name, sets, reps };
-                if (!isNaN(rest)) ex.rest_sec = rest;
+                if (!isNaN(rest) && rest >= 0 && rest <= 600) ex.rest_sec = rest;
                 if (superset) ex.superset_with = superset;
                 exercises.push(ex);
             }

@@ -1,6 +1,6 @@
 # Workout Planner
 
-A lightweight client-side web application for managing and viewing personalized workout plans. Create your routine directly in the browser (or upload a `plan.json` file) and the app stores it in your browser's `localStorage`. The workouts are displayed by day with simple navigation controls.
+A lightweight client-side web application for managing and viewing personalized workout plans. Build your routine directly in the browser (or upload a `plan.json` file) and the app stores it in your browser's `localStorage`. The workouts are displayed by day with simple navigation controls. The interface uses Bootstrap for a clean, responsive design.
 
 ---
 
@@ -9,6 +9,8 @@ A lightweight client-side web application for managing and viewing personalized 
 * **Client-side only**: No backend or database required.
 * **Persistent storage**: Plans saved in `localStorage` across sessions.
 * **JSON-based input**: Create or edit your plan directly in the browser.
+* **Bootstrap UI**: Responsive interface styled with Bootstrap 5.
+* **Predefined muscle groups & validation**: Build plans using dropdown options with built‑in checks for your inputs.
 * **Day-wise navigation**: View routines for each weekday.
 * **Static hosting**: Ready for GitHub Pages or any static host.
 
@@ -30,7 +32,8 @@ A lightweight client-side web application for managing and viewing personalized 
 3. **Create your workout plan**
 
    * Click **Create a Custom Plan** or open `create.html`.
-   * Fill in your exercises and save the plan to your browser.
+   * Select muscle groups from the dropdown, add your exercises (with validations), then save each day.
+   * When finished, save the entire plan to your browser.
 
 4. **View today’s workout**
 
