@@ -12,6 +12,8 @@ A lightweight client-side web application for managing and viewing personalized 
 * **Bootstrap UI**: Responsive interface styled with Bootstrap 5.
 * **Predefined muscle groups & validation**: Build plans using dropdown options with built‑in checks for your inputs.
 * **Day-wise navigation**: View routines for each weekday.
+* **Workout logging**: Record the weights you lift for each exercise.
+* **Statistics view**: See your best lifts in a simple table.
 * **Static hosting**: Ready for GitHub Pages or any static host.
 
 ---
@@ -42,7 +44,15 @@ A lightweight client-side web application for managing and viewing personalized 
 
 5. **Navigate between days**
 
-   * Use the ◀️ and ▶️ buttons to switch days.
+* Use the ◀️ and ▶️ buttons to switch days.
+
+6. **Log your weights**
+
+   * Open `log.html` to record how much weight you lifted for each set.
+
+7. **Check your statistics**
+
+   * Open `stats.html` to see the best weight you've logged for each exercise.
 
 ---
 
