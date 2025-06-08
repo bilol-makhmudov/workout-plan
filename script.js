@@ -49,7 +49,7 @@ function renderWorkout(dayIndex) {
        muscleGroupEl.textContent = "";
        containerEl.innerHTML = `<div class="info-message" style="text-align: center; color: #3498db; margin-top: 20px;">
                                    <p>No workout plan found.</p>
-                                   <p>Please <a href="upload.html" style="color: #3498db; font-weight: bold;">upload a plan</a> to get started.</p>
+                                   <p>Please <a href="create.html" style="color: #3498db; font-weight: bold;">create a plan</a> to get started.</p>
                                 </div>`;
        return; // Exit the function
   }
@@ -109,7 +109,7 @@ function init() {
       muscleGroupEl.textContent = "";
       containerEl.innerHTML = `<div class="error-message" style="text-align: center; color: #e74c3c; margin-top: 20px;">
                                   <p>An unexpected error occurred.</p>
-                                  <p>Please try clearing your browser's local storage or <a href="upload.html" style="color: #e74c3c; font-weight: bold;">upload a plan</a>.</p>
+                                  <p>Please try clearing your browser's local storage or <a href="create.html" style="color: #e74c3c; font-weight: bold;">create a plan</a>.</p>
                                </div>`;
   } finally {
       [prevBtn, nextBtn].forEach(btn => btn.disabled = false);

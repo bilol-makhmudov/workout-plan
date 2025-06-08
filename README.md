@@ -1,6 +1,6 @@
-# My Workout Plan App
+# Workout Planner
 
-Vibe coded client-side web application for managing and viewing personalized workout plans. Users upload a `plan.json` file, which the app stores in browser `localStorage`. The app displays workouts by day and lets users navigate between days.
+A lightweight client-side web application for managing and viewing personalized workout plans. Create your routine directly in the browser (or upload a `plan.json` file) and the app stores it in your browser's `localStorage`. The workouts are displayed by day with simple navigation controls.
 
 ---
 
@@ -8,7 +8,7 @@ Vibe coded client-side web application for managing and viewing personalized wor
 
 * **Client-side only**: No backend or database required.
 * **Persistent storage**: Plans saved in `localStorage` across sessions.
-* **JSON-based input**: Upload a structured `plan.json` file.
+* **JSON-based input**: Create or edit your plan directly in the browser.
 * **Day-wise navigation**: View routines for each weekday.
 * **Static hosting**: Ready for GitHub Pages or any static host.
 
@@ -27,10 +27,10 @@ Vibe coded client-side web application for managing and viewing personalized wor
 
    * Open `index.html` in a modern browser.
 
-3. **Upload your workout plan**
+3. **Create your workout plan**
 
-   * Click **Upload a Custom Plan** or open `upload.html`.
-   * Choose your `plan.json` file and upload.
+   * Click **Create a Custom Plan** or open `create.html`.
+   * Fill in your exercises and save the plan to your browser.
 
 4. **View today’s workout**
 

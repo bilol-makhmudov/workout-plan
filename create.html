@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Workout Plan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <h1>Create Workout Plan</h1>
+    </header>
+    <main>
+        <section class="create-container">
+            <label for="day-select">Day</label>
+            <select id="day-select">
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+            </select>
+
+            <label for="muscle-group" style="margin-top:15px;">Muscle Group</label>
+            <input type="text" id="muscle-group" placeholder="e.g. Chest">
+
+            <div id="exercises"></div>
+            <button type="button" id="add-exercise" class="btn-small" style="margin-top:10px;">Add Exercise</button>
+
+            <div id="create-buttons" style="margin-top:15px;">
+                <button type="button" id="save-day" class="btn">Save Day</button>
+                <button type="button" id="save-plan" class="btn" style="margin-left:10px;">Save Plan</button>
+            </div>
+            <div id="status" class="status" style="margin-top:15px;"></div>
+
+            <a href="index.html" class="back-link" style="display:block;margin-top:20px;">Back to Workout Planner</a>
+        </section>
+    </main>
+    <script src="create.js"></script>
+</body>
+</html>
