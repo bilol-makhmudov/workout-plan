@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
+import { Card } from 'react-bootstrap';
 import { WorkoutLogs } from '../types';
 
 interface SeriesPoint { date: string; weight: number; }
@@ -65,7 +66,12 @@ const Stats: React.FC = () => {
 
   if (Object.keys(logs).length === 0) return <p className="text-center">No logs yet.</p>;
 
-  return <div ref={containerRef}></div>;
+  return (
+    <Card className="p-3">
+      <h5 className="mb-3">Progress Charts</h5>
+      <div ref={containerRef}></div>
+    </Card>
+  );
 };
 
 export default Stats;
