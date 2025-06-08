@@ -17,10 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveDayBtn = document.getElementById('save-day');
     const savePlanBtn = document.getElementById('save-plan');
     const statusEl = document.getElementById('status');
+    const form = $('#plan-form');
 
     let selectedMuscles = [];
 
     const plan = {};
+    let exCounter = 0;
+
+    form.validate({
+        errorClass: 'is-invalid',
+        validClass: 'is-valid',
+        onkeyup: function(element) { $(element).valid(); }
+    });
 
     function updateMuscleButton() {
         muscleDropdownBtn.textContent = selectedMuscles.length ? selectedMuscles.join(', ') : 'Select Muscle Groups';
@@ -46,17 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateMuscleButton();
     function createExerciseRow(data = {}) {
+        exCounter++;
         const row = document.createElement('div');
         row.className = 'exercise-row';
         row.innerHTML = `
-            <input type="text" class="form-control ex-name" placeholder="Name" value="${data.name || ''}" required>
-            <input type="number" class="form-control ex-sets" placeholder="Sets" value="${data.sets || ''}" min="1" max="10" required>
-            <input type="text" class="form-control ex-reps" placeholder="Reps" value="${data.reps || ''}" pattern="\\d+(?:-\\d+)?" required>
-            <input type="number" class="form-control ex-rest" placeholder="Rest" value="${data.rest_sec || ''}" min="0" max="600">
-            <input type="text" class="form-control ex-superset" placeholder="Superset" value="${data.superset_with || ''}">
+            <input type="text" name="ex-name-${exCounter}" class="form-control ex-name" placeholder="Name" value="${data.name || ''}" required>
+            <input type="number" name="ex-sets-${exCounter}" class="form-control ex-sets" placeholder="Sets" value="${data.sets || ''}" min="1" max="10" required>
+            <input type="text" name="ex-reps-${exCounter}" class="form-control ex-reps" placeholder="Reps" value="${data.reps || ''}" pattern="\\d+(?:-\\d+)?" required>
+            <input type="number" name="ex-rest-${exCounter}" class="form-control ex-rest" placeholder="Rest" value="${data.rest_sec || ''}" min="0" max="600">
+            <input type="text" name="ex-superset-${exCounter}" class="form-control ex-superset" placeholder="Superset" value="${data.superset_with || ''}">
             <button type="button" class="btn btn-danger btn-sm remove-exercise">&times;</button>
         `;
         row.querySelector('.remove-exercise').addEventListener('click', () => row.remove());
+        $(row).find('input').on('input', function(){ $('#plan-form').validate().element(this); });
         return row;
     }
 
@@ -86,15 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     daySelect.addEventListener('change', e => loadDay(e.target.value));
 
     saveDayBtn.addEventListener('click', () => {
-        let valid = true;
-        $('#exercises .exercise-row input').each(function () {
-            if (!this.checkValidity()) {
-                this.reportValidity();
-                valid = false;
-                return false;
-            }
-        });
-        if (!valid) return;
+        if (!form.valid()) return;
 
         const day = daySelect.value;
         const muscle = selectedMuscles.join(', ');
@@ -122,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     savePlanBtn.addEventListener('click', () => {
+        if (!form.valid()) return;
         if (Object.keys(plan).length === 0) {
             statusEl.textContent = 'Add at least one day before saving.';
             statusEl.className = 'status-error';

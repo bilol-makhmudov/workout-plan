@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('save-log');
   const statusEl = document.getElementById('log-status');
 
+  const params = new URLSearchParams(window.location.search);
+  const passedDay = parseInt(params.get('day'), 10);
+  const highlightExercise = params.get('exercise');
+
   const plan = JSON.parse(localStorage.getItem('workoutPlan') || '{}');
 
   function render(dateStr) {
@@ -44,6 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="input-group-text">kg</span>
             </div>`;
       }
+      if (highlightExercise && ex.name === highlightExercise) {
+        exDiv.classList.add('border', 'border-primary');
+        setTimeout(() => exDiv.scrollIntoView({behavior: 'smooth'}), 0);
+      }
       container.appendChild(exDiv);
     });
 
@@ -60,8 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const today = new Date();
-  dateInput.valueAsDate = today;
+  function nextDateForDay(idx) {
+    const d = new Date();
+    while (d.getDay() !== idx) {
+      d.setDate(d.getDate() + 1);
+    }
+    return d;
+  }
+
+  const initialDate = (!isNaN(passedDay)) ? nextDateForDay(passedDay) : new Date();
+  dateInput.valueAsDate = initialDate;
   render(dateInput.value);
 
   dateInput.addEventListener('change', () => render(dateInput.value));

@@ -19,7 +19,7 @@ const nextBtn = document.getElementById("next-day");
 
 let workoutsCache = null;
 
-function createExerciseEl({ name, sets, reps, rest_sec, superset_with }) {
+function createExerciseEl({ name, sets, reps, rest_sec, superset_with }, dayIdx) {
   const wrapper = document.createElement("div");
   wrapper.className = "exercise";
 
@@ -36,6 +36,12 @@ function createExerciseEl({ name, sets, reps, rest_sec, superset_with }) {
   `;
 
   wrapper.append(header, details);
+  wrapper.addEventListener('click', () => {
+    const url = new URL('log.html', window.location.href);
+    url.searchParams.set('day', dayIdx);
+    url.searchParams.set('exercise', name);
+    window.location.href = url.toString();
+  });
   return wrapper;
 }
 
@@ -71,7 +77,7 @@ function renderWorkout(dayIndex) {
 
   const fragment = document.createDocumentFragment();
   exercises.forEach(ex => {
-      fragment.appendChild(createExerciseEl(ex));
+      fragment.appendChild(createExerciseEl(ex, dayIndex));
   });
   containerEl.appendChild(fragment);
 }
