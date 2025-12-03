@@ -9,6 +9,7 @@ import Logs from './pages/Logs';
 import Stats from './pages/Stats';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
